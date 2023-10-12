@@ -13,10 +13,6 @@ def time_out(e):
     return e[0] == 'TIMEOUT'
 
 
-def time_out_5(e):
-    return e[0] == 'TIMEOUT' and e[1] == 5.0
-
-
 def right_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
 
@@ -44,10 +40,10 @@ class Idle:  # -> 객체생성을 위한 클래스x
             boy.action = 2
         elif boy.action == 1:
             boy.action = 3
-            boy.dir = 0
-            boy.frame = 0
-            boy.wait_time = get_time()
-            print('Idle Enter')
+        boy.dir = 0
+        boy.frame = 0
+        boy.idle_start_time = get_time()
+        print('Idle Enter')
 
     @staticmethod
     def exit(boy, e):
@@ -56,6 +52,9 @@ class Idle:  # -> 객체생성을 위한 클래스x
     @staticmethod
     def do(boy):
         print('Idle Do')
+        boy.frame = (boy.frame + 1) % 8
+        if get_time() - boy.idle_start_time > 3:
+            boy.state_machine.handle_event(('TIMEOUT', 0))
 
     @staticmethod
     def draw(boy):
@@ -67,10 +66,7 @@ class Sleep:  # -> 객체생성을 위한 클래스x
 
     @staticmethod
     def enter(boy, e):
-        boy.action = 3
-        boy.dir = 0
         boy.frame = 0
-        boy.wait_time = get_time()
         print('눕다')
 
     @staticmethod
@@ -78,14 +74,12 @@ class Sleep:  # -> 객체생성을 위한 클래스x
         print('일어서기')
 
     @staticmethod
-    def do(boy, e):
+    def do(boy):
         boy.frame = (boy.frame + 1) % 8
-        if get_time() - boy.start_time > 3:
-            boy.state_machine.handle_event(('TIME_OUT', 0))
         print('드르렁드르렁')
 
     @staticmethod
-    def draw(boy, e):
+    def draw(boy):
         if boy.action == 2:
             boy.image.clip_composite_draw(boy.frame * 100, 200, 100, 100,
                                           -3.141592 / 2, '', boy.x + 25, boy.y - 25, 100, 100)
@@ -146,8 +140,8 @@ class StateMachine:
         self.transitions = {
             Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep},
             Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle},
-            Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle}
-            AutoRun: {time_out()}
+            Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle},
+            #AutoRun: {time_out: Sleep}
         }
 
     def start(self):
