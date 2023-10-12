@@ -144,7 +144,7 @@ class AutoRun:  # -> 객체생성을 위한 클래스x
 
     @staticmethod
     def draw(boy):
-        boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y)
+        boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y + 30, 200, 200)
         pass
 
 
@@ -154,9 +154,10 @@ class StateMachine:
         self.boy = boy
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep,a_key_down: AutoRun},
-            Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle,a_key_down: AutoRun},
-            Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle,a_key_down: AutoRun},
+            Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, a_key_down: AutoRun},
+            Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, a_key_down: AutoRun},
+            Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle,
+                    a_key_down: AutoRun},
             AutoRun: {time_out: Idle}
         }
 
