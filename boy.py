@@ -122,6 +122,7 @@ class AutoRun:  # -> 객체생성을 위한 클래스x
 
     @staticmethod
     def enter(boy, e):
+        boy.idle_start_time = get_time()
         rand_dir = random.choice([True, False])
         if rand_dir:
             boy.dir, boy.action = 1, 1
@@ -135,6 +136,8 @@ class AutoRun:  # -> 객체생성을 위한 클래스x
 
     @staticmethod
     def do(boy):
+        if get_time() - boy.idle_start_time > 4:
+            boy.state_machine.handle_event(('TIMEOUT', 0))
         boy.frame = (boy.frame + 1) % 8
         boy.x += boy.dir * 5
         if boy.x + 50 > 800 or boy.x - 50 < 0:
