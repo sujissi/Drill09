@@ -116,7 +116,24 @@ class Run:  # -> 객체생성을 위한 클래스x
     def draw(boy):
         boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y)
         pass
+class AutoRun:  # -> 객체생성을 위한 클래스x
 
+    @staticmethod
+    def enter(boy, e):
+        print('AutoRun Enter')
+
+    @staticmethod
+    def exit(boy, e):
+        print('AutoRun Exit')
+
+    @staticmethod
+    def do(boy):
+        print('AutoRun Do')
+
+    @staticmethod
+    def draw(boy):
+        boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y)
+        pass
 
 ################# 상태머신 #####################
 class StateMachine:
